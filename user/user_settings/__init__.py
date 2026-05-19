@@ -1,0 +1,1 @@
+from user.user_settings.handlers import user_settings_handler, change_lang_handler

@@ -1,4 +1,4 @@
-from telegram import Update, BotCommandScopeChat, Bot
+from telegram import Update, BotCommandScopeChat, Bot, Chat
 from telegram.ext import CommandHandler, ContextTypes, Application, ConversationHandler
 from common.decorators import is_user_banned, add_new_user, is_user_member
 from common.keyboards import build_user_keyboard, build_admin_keyboard
@@ -7,22 +7,40 @@ from common.lang_dicts import TEXTS, get_lang
 from custom_filters import Admin, PrivateChat, PrivateChatAndAdmin
 from Config import Config
 import models
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def inits(app: Application):
     bot: Bot = app.bot
-    tg_owner = await bot.get_chat(chat_id=Config.OWNER_ID)
+    owner_exists = get_owner_from_database()
+    if not owner_exists:
+        try:
+            tg_owner = await bot.get_chat(chat_id=Config.OWNER_ID)
+            add_owner_to_database(tg_owner)
+        except Exception as e:
+            logger.error(f"Error getting owner chat: {e}")
+
+
+def get_owner_from_database():
     with models.session_scope() as s:
-        owner = s.get(models.User, tg_owner.id)
-        if not owner:
-            s.add(
-                models.User(
-                    user_id=tg_owner.id,
-                    username=tg_owner.username if tg_owner.username else "",
-                    name=tg_owner.full_name,
-                    is_admin=True,
-                )
+        owner = (
+            s.query(models.User).filter(models.User.user_id == Config.OWNER_ID).first()
+        )
+        return owner
+
+
+def add_owner_to_database(tg_owner: Chat):
+    with models.session_scope() as s:
+        s.add(
+            models.User(
+                user_id=tg_owner.id,
+                username=tg_owner.username if tg_owner.username else "",
+                name=tg_owner.full_name,
+                is_admin=True,
             )
+        )
 
 
 async def set_commands(update: Update, context: ContextTypes.DEFAULT_TYPE):

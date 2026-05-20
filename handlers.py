@@ -83,22 +83,18 @@ def setup_and_run():
 
     app.add_error_handler(error_handler)
 
-    # app.job_queue.run_daily(
-    #     callback=check_expiring_subscriptions,
-    #     time=datetime.time(
-    #         Config.REMINDER_CHECK_HOUR, 0, tzinfo=ZoneInfo(Config.TIMEZONE)
-    #     ),
-    #     name="subscription_expiry_reminders",
-    #     job_kwargs={
-    #         "id": "subscription_expiry_reminders",
-    #         "misfire_grace_time": None,
-    #         "coalesce": True,
-    #         "replace_existing": True,
-    #     },
-    # )
-    app.job_queue.run_once(
+    app.job_queue.run_daily(
         callback=check_expiring_subscriptions,
-        when=10,
+        time=datetime.time(
+            Config.REMINDER_CHECK_HOUR, 0, tzinfo=ZoneInfo(Config.TIMEZONE)
+        ),
+        name="subscription_expiry_reminders",
+        job_kwargs={
+            "id": "subscription_expiry_reminders",
+            "misfire_grace_time": None,
+            "coalesce": True,
+            "replace_existing": True,
+        },
     )
 
     app.run_polling(allowed_updates=Update.ALL_TYPES, close_loop=False)

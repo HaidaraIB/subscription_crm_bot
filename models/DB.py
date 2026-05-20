@@ -30,6 +30,10 @@ def init_db():
         conn.execute(text("PRAGMA busy_timeout=5000"))
 
     Base.metadata.create_all(engine)
+    from models.BotSettings import BotSettings
+
+    with session_scope() as s:
+        BotSettings.seed_defaults(s)
 
 
 Session = scoped_session(

@@ -66,6 +66,12 @@ def build_admin_keyboard(
                     callback_data="broadcast",
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text=BUTTONS[lang]["subscriptions_crm"],
+                    callback_data="subscriptions_crm",
+                )
+            ],
         ]
 
     elif user_id:
@@ -115,6 +121,16 @@ def build_admin_keyboard(
                     InlineKeyboardButton(
                         text=BUTTONS[lang]["broadcast"],
                         callback_data="broadcast",
+                    )
+                ]
+            )
+
+        if HasPermission.check(user_id, models.Permission.MANAGE_SUBSCRIPTIONS):
+            keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        text=BUTTONS[lang]["subscriptions_crm"],
+                        callback_data="subscriptions_crm",
                     )
                 ]
             )

@@ -2,8 +2,8 @@ import models
 
 TEXTS = {
     models.Language.ARABIC: {
-        "user_welcome_msg": "أهلاً بك...",
-        "admin_welcome_msg": "أهلاً بك...",
+        "user_welcome_msg": "أهلاً بك في بوت إدارة الاشتراكات.",
+        "admin_welcome_msg": "لوحة إدارة الاشتراكات — استخدم القائمة أدناه.",
         "force_join_msg": (
             f"لبدء استخدام البوت يجب عليك الانضمام الى محادثة البوت أولاً\n\n"
             "<b>اشترك أولاً 👇</b>\n"
@@ -58,8 +58,8 @@ TEXTS = {
         "action_ban": "حظر",
         "action_unban": "فك حظر",
         "send_message": "أرسل الرسالة",
-        "send_message_to": "هل تريد إرسال الرسالة إلى:",
-        "send_user_ids": "قم بإرسال آيديات المستخدمين الذين تريد إرسال الرسالة لهم سطراً سطراً.",
+        "send_message_to": "هل تريد إرسال الرسالة إلى",
+        "send_user_ids": "قم بإرسال آيديات المستخدمين الذين تريد إرسال الرسالة لهم سطراً سطراً",
         "send_chat_id": "أرسل آيدي القناة/المجموعة",
         "sending_messages": "يقوم البوت بإرسال الرسائل الآن، يمكنك متابعة استخدامه بشكل طبيعي",
         "bot_must_be_member": "يجب أن يكون البوت مشتركاً في هذه القناة/المجموعة حتى يتمكن من النشر فيها",
@@ -80,17 +80,17 @@ TEXTS = {
         "force_join_chat_removed_success": "تمت إزالة محادثة الإجبار على الانضمام بنجاح ✅",
         "remove_force_join_chat_instruction": "اختر من القائمة أدناه المحادثة التي تريد إزالتها.",
         "no_force_join_chats": "لا توجد محادثات إجبار على الانضمام حالياً ❗️",
-        "force_join_chats_list_title": "قائمة محادثات الإجبار على الانضمام:",
+        "force_join_chats_list_title": "قائمة محادثات الإجبار على الانضمام",
         "invalid_chat_id": "آيدي المحادثة غير صحيح ❌",
         "chat_not_found": "لم يتم العثور على المحادثة ❌\nتأكد من الآيدي أو من أن البوت عضو في المحادثة",
         "chat_link_required": "المحادثة لا تحتوي على رابط دعوة. يرجى إرسال رابط الدعوة يدوياً.",
         "invalid_chat_link": "رابط المحادثة غير صحيح ❌\nيجب أن يبدأ بـ https://t.me/ أو @",
-        "select_permissions_instruction": "اختر الصلاحيات التي تريد منحها لهذا الآدمن:",
+        "select_permissions_instruction": "اختر الصلاحيات التي تريد منحها لهذا الآدمن",
         "permissions_selected": "تم اختيار الصلاحيات بنجاح ✅",
         "manage_permissions": "إدارة الصلاحيات 🔐",
         "edit_admin_permissions": "تعديل صلاحيات الآدمن 🔐",
-        "select_admin_to_edit_permissions": "اختر الآدمن الذي تريد تعديل صلاحياته:",
-        "current_permissions": "الصلاحيات الحالية:",
+        "select_admin_to_edit_permissions": "اختر الآدمن الذي تريد تعديل صلاحياته",
+        "current_permissions": "الصلاحيات الحالية",
         "no_permissions": "لا توجد صلاحيات",
         "permission_granted": "تم منح الصلاحية ✅",
         "permission_revoked": "تم سحب الصلاحية ✅",
@@ -129,10 +129,119 @@ TEXTS = {
         "excel_no": "لا",
         "lang_arabic": "العربية",
         "lang_english": "English",
+        "permission_manage_subscriptions": "إدارة اشتراكات العملاء",
+        "subscriptions_crm_title": "إدارة اشتراكات العملاء 📋",
+        "subs_add_instruction": "أرسل اسم العميل",
+        "subs_enter_phone": "أرسل رقم الجوال",
+        "subs_enter_username": "أرسل يوزر الاشتراك (اسم المستخدم)",
+        "subs_enter_password": "أرسل كلمة المرور",
+        "subs_enter_subscription_type": "أرسل نوع الاشتراك (مثال: بريميوم)",
+        "subs_choose_duration": "اختر مدة الاشتراك بالأيام",
+        "subs_enter_custom_duration": "أرسل عدد الأيام (رقم)",
+        "subs_choose_start_date": "اختر تاريخ بداية الاشتراك",
+        "subs_enter_start_date": "أرسل تاريخ البداية (YYYY-MM-DD)",
+        "subs_confirm_dates": (
+            "تاريخ البداية: <b>{start}</b>\n"
+            "تاريخ النهاية: <b>{end}</b>\n\n"
+            "اضغط تأكيد أو عدّل تاريخ النهاية"
+        ),
+        "subs_enter_end_date": "أرسل تاريخ النهاية (YYYY-MM-DD)",
+        "subs_enter_notes": "أرسل ملاحظات إضافية",
+        "subs_enter_telegram_id": "أرسل آيدي تيليجرام العميل للتنبيهات",
+        "subs_confirm_add": ("تأكيد إضافة العميل:\n\n" "{card}"),
+        "subs_customer_added": "تمت إضافة العميل بنجاح ✅",
+        "subs_search_choose": "ابحث عن العميل عبر",
+        "subs_search_enter_phone": "أرسل رقم الجوال",
+        "subs_search_enter_username": "أرسل يوزر الاشتراك",
+        "subs_customer_not_found": "لم يتم العثور على العميل ❌",
+        "subs_multiple_found": "تم العثور على أكثر من عميل. اختر من القائمة",
+        "subs_customer_card": (
+            "الاسم: {name}\n"
+            "الجوال: <code>{phone}</code>\n"
+            "اليوزر: <code>{service_username}</code>\n"
+            "الباسورد: <code>{service_password}</code>\n"
+            "نوع الاشتراك: {subscription_type}\n"
+            "المدة: {duration_days} يوم\n"
+            "البداية: {start_date}\n"
+            "النهاية: {end_date}\n"
+            "الحالة: {status}\n"
+            "آيدي تيليجرام: {telegram_user_id}\n"
+            "ملاحظات: {notes}"
+        ),
+        "subs_status_active": "نشط ✅",
+        "subs_status_expired": "منتهي ❌",
+        "subs_edit_choose_field": "اختر الحقل الذي تريد تعديله",
+        "subs_edit_enter_value": "أرسل القيمة الجديدة",
+        "subs_customer_updated": "تم تحديث بيانات العميل ✅",
+        "subs_renew_choose_duration": "اختر مدة التجديد",
+        "subs_renew_success": (
+            "تم تجديد الاشتراك ✅\n" "تاريخ النهاية الجديد: <b>{end_date}</b>"
+        ),
+        "subs_delete_confirm": ("هل تريد حذف هذا العميل؟\n\n" "{card}"),
+        "subs_customer_deleted": "تم حذف العميل ✅",
+        "subs_stats_text": (
+            "📊 <b>إحصائيات الاشتراكات</b>\n\n"
+            "إجمالي العملاء: <b>{total}</b>\n"
+            "اشتراكات نشطة: <b>{active}</b>\n"
+            "اشتراكات منتهية: <b>{expired}</b>\n"
+            "قريبة من الانتهاء: <b>{expiring}</b>"
+        ),
+        "subs_expiring_list_title": "اشتراكات قريبة من الانتهاء ({count}):",
+        "subs_expired_list_title": "اشتراكات منتهية ({count}):",
+        "subs_no_customers_in_list": "لا يوجد عملاء في هذه القائمة",
+        "subs_offer_settings_title": "إعدادات التنبيهات والعروض 🔔",
+        "subs_edit_offer_text": "أرسل نص عرض التجديد الجديد",
+        "subs_edit_reminder_template": (
+            "أرسل قالب رسالة التنبيه الجديد.\n\n"
+            "استخدم المتغيرات التالية (اكتبها كما هي بين أقواس معقوفة):\n"
+            "• <code>{name}</code> — اسم العميل\n"
+            "• <code>{service_username}</code> — يوزر الاشتراك\n"
+            "• <code>{end_date}</code> — تاريخ الانتهاء\n"
+            "• <code>{days_left}</code> — الأيام المتبقية\n"
+            "• <code>{renewal_offer}</code> — نص عرض التجديد (من الإعدادات)"
+        ),
+        "subs_edit_reminder_days": "أرسل أيام التنبيه قبل الانتهاء (مفصولة بفاصلة، مثال: 3,1)",
+        "subs_settings_saved": "تم حفظ الإعدادات ✅",
+        "subs_invalid_phone": "رقم الجوال غير صالح ❌",
+        "subs_duplicate_phone": "رقم الجوال مسجل مسبقاً ❌",
+        "subs_invalid_date": "تاريخ غير صالح. استخدم YYYY-MM-DD ❌",
+        "subs_invalid_duration": "عدد الأيام غير صالح ❌",
+        "subs_invalid_telegram_id": "آيدي تيليجرام غير صالح ❌",
+        "subs_name_none": "—",
+        "subs_notes_none": "—",
+        "subs_telegram_none": "غير مرتبط",
+        "subs_reminder_owner_message": (
+            "📬 <b>تنبيه اشتراك</b> — عميل #{id}\n\n"
+            "الاسم: {name}\n"
+            "الجوال: <code>{phone}</code>\n"
+            "اليوزر: <code>{service_username}</code>\n"
+            "الباسورد: <code>{service_password}</code>\n"
+            "نوع الاشتراك: {subscription_type}\n"
+            "المدة: {duration_days} يوم\n"
+            "البداية: {start_date}\n"
+            "النهاية: <b>{end_date}</b>\n"
+            "متبقي: <b>{days_left}</b> يوم/أيام\n"
+            "آيدي تيليجرام: {telegram_user_id}\n"
+            "ملاحظات: {notes}\n\n"
+            "⬇️ نص الرسالة المرسلة للعميل:\n"
+            "{customer_message}"
+        ),
+        "subs_reminder_summary": (
+            "📬 ملخص تنبيهات الاشتراكات:\n"
+            "تم الإرسال للعميل: {sent_to_customers}\n"
+            "تم الإرسال للمالك: {sent_to_owner}\n"
+            "فشل الإرسال: {failed}\n"
+        ),
+        "subs_edit_offer_saved": "تم تحديث نص العرض ✅",
+        "subs_edit_reminder_template_saved": "تم تحديث قالب رسالة التنبيه ✅",
+        "subs_edit_reminder_days_saved": "تم تحديث أيام التنبيه ✅",
+        "subs_current_offer": "نص عرض التجديد الحالي:\n\n{text}",
+        "subs_current_reminder_template": "قالب رسالة التنبيه الحالي:\n\n{text}",
+        "subs_current_reminder_days": "أيام التنبيه الحالية: <b>{days}</b>",
     },
     models.Language.ENGLISH: {
-        "user_welcome_msg": "Welcome...",
-        "admin_welcome_msg": "Welcome...",
+        "user_welcome_msg": "Welcome to the subscription management bot.",
+        "admin_welcome_msg": "Subscription admin panel — use the menu below.",
         "force_join_msg": (
             f"You have to join the bot's chat in order to be able to use it\n\n"
             "<b>Join First 👇</b>\n"
@@ -187,7 +296,7 @@ TEXTS = {
         "action_ban": "ban",
         "action_unban": "unban",
         "send_message": "Send the message",
-        "send_message_to": "Who do you want to send the message to:",
+        "send_message_to": "Who do you want to send the message to?",
         "send_user_ids": "Send the user IDs you want to send the message to, one per line.",
         "send_chat_id": "Send the channel/group ID",
         "sending_messages": "The bot is sending messages now, you can continue using it normally",
@@ -209,17 +318,17 @@ TEXTS = {
         "force_join_chat_removed_success": "Force join chat removed successfully ✅",
         "remove_force_join_chat_instruction": "Choose from the list below the chat you want to remove.",
         "no_force_join_chats": "No force join chats currently ❗️",
-        "force_join_chats_list_title": "Force Join Chats List:",
+        "force_join_chats_list_title": "Force Join Chats List",
         "invalid_chat_id": "Invalid chat ID ❌",
         "chat_not_found": "Chat not found ❌\nMake sure of the ID or that the bot is a member of the chat",
         "chat_link_required": "The chat doesn't have an invite link. Please send the invite link manually.",
         "invalid_chat_link": "Invalid chat link ❌\nMust start with https://t.me/ or @",
-        "select_permissions_instruction": "Select the permissions you want to grant to this admin:",
+        "select_permissions_instruction": "Select the permissions you want to grant to this admin",
         "permissions_selected": "Permissions selected successfully ✅",
         "manage_permissions": "Manage Permissions 🔐",
         "edit_admin_permissions": "Edit Admin Permissions 🔐",
-        "select_admin_to_edit_permissions": "Select the admin whose permissions you want to edit:",
-        "current_permissions": "Current Permissions:",
+        "select_admin_to_edit_permissions": "Select the admin whose permissions you want to edit",
+        "current_permissions": "Current Permissions",
         "no_permissions": "No permissions",
         "permission_granted": "Permission granted ✅",
         "permission_revoked": "Permission revoked ✅",
@@ -258,6 +367,115 @@ TEXTS = {
         "excel_no": "No",
         "lang_arabic": "Arabic",
         "lang_english": "English",
+        "permission_manage_subscriptions": "Manage customer subscriptions",
+        "subscriptions_crm_title": "Customer subscriptions CRM 📋",
+        "subs_add_instruction": "Send customer name",
+        "subs_enter_phone": "Send phone number",
+        "subs_enter_username": "Send subscription username",
+        "subs_enter_password": "Send password",
+        "subs_enter_subscription_type": "Send subscription type (e.g. Premium)",
+        "subs_choose_duration": "Choose subscription duration in days",
+        "subs_enter_custom_duration": "Send number of days",
+        "subs_choose_start_date": "Choose subscription start date",
+        "subs_enter_start_date": "Send start date (YYYY-MM-DD)",
+        "subs_confirm_dates": (
+            "Start: <b>{start}</b>\n" "End: <b>{end}</b>\n\n" "Confirm or edit end date"
+        ),
+        "subs_enter_end_date": "Send end date (YYYY-MM-DD)",
+        "subs_enter_notes": "Send notes",
+        "subs_enter_telegram_id": "Send customer Telegram ID for reminders",
+        "subs_confirm_add": ("Confirm adding customer:\n\n" "{card}"),
+        "subs_customer_added": "Customer added successfully ✅",
+        "subs_search_choose": "Search customer by",
+        "subs_search_enter_phone": "Send phone number",
+        "subs_search_enter_username": "Send subscription username",
+        "subs_customer_not_found": "Customer not found ❌",
+        "subs_multiple_found": "Multiple customers found. Choose from the list",
+        "subs_customer_card": (
+            "Name: {name}\n"
+            "Phone: <code>{phone}</code>\n"
+            "Username: <code>{service_username}</code>\n"
+            "Password: <code>{service_password}</code>\n"
+            "Type: {subscription_type}\n"
+            "Duration: {duration_days} days\n"
+            "Start: {start_date}\n"
+            "End: {end_date}\n"
+            "Status: {status}\n"
+            "Telegram ID: {telegram_user_id}\n"
+            "Notes: {notes}"
+        ),
+        "subs_status_active": "Active ✅",
+        "subs_status_expired": "Expired ❌",
+        "subs_edit_choose_field": "Choose field to edit",
+        "subs_edit_enter_value": "Send new value",
+        "subs_customer_updated": "Customer updated successfully ✅",
+        "subs_renew_choose_duration": "Choose renewal duration",
+        "subs_renew_success": (
+            "Subscription renewed ✅\n" "New end date: <b>{end_date}</b>"
+        ),
+        "subs_delete_confirm": ("Delete this customer?\n\n" "{card}"),
+        "subs_customer_deleted": "Customer deleted ✅",
+        "subs_stats_text": (
+            "📊 <b>Subscription statistics</b>\n\n"
+            "Total customers: <b>{total}</b>\n"
+            "Active: <b>{active}</b>\n"
+            "Expired: <b>{expired}</b>\n"
+            "Expiring soon: <b>{expiring}</b>"
+        ),
+        "subs_expiring_list_title": "Expiring soon ({count}):",
+        "subs_expired_list_title": "Expired subscriptions ({count}):",
+        "subs_no_customers_in_list": "No customers in this list.",
+        "subs_offer_settings_title": "Reminder & offer settings 🔔",
+        "subs_edit_offer_text": "Send new renewal offer text",
+        "subs_edit_reminder_template": (
+            "Send the new expiry reminder message template.\n\n"
+            "Use these placeholders (type them exactly with curly braces):\n"
+            "• <code>{name}</code> — customer name\n"
+            "• <code>{service_username}</code> — service username\n"
+            "• <code>{end_date}</code> — expiry date\n"
+            "• <code>{days_left}</code> — days until expiry\n"
+            "• <code>{renewal_offer}</code> — renewal offer text (from settings)"
+        ),
+        "subs_edit_reminder_days": "Send reminder days before expiry (comma-separated, e.g. 3,1)",
+        "subs_settings_saved": "Settings saved ✅",
+        "subs_invalid_phone": "Invalid phone number ❌",
+        "subs_duplicate_phone": "Phone number already registered ❌",
+        "subs_invalid_date": "Invalid date. Use YYYY-MM-DD ❌",
+        "subs_invalid_duration": "Invalid number of days ❌",
+        "subs_invalid_telegram_id": "Invalid Telegram ID ❌",
+        "subs_name_none": "—",
+        "subs_notes_none": "—",
+        "subs_telegram_none": "Not linked",
+        "subs_reminder_owner_message": (
+            "📬 <b>Subscription reminder</b> — customer #{id}\n\n"
+            "Name: {name}\n"
+            "Phone: <code>{phone}</code>\n"
+            "Username: <code>{service_username}</code>\n"
+            "Password: <code>{service_password}</code>\n"
+            "Plan: {subscription_type}\n"
+            "Duration: {duration_days} days\n"
+            "Start: {start_date}\n"
+            "End: <b>{end_date}</b>\n"
+            "Days left: <b>{days_left}</b>\n"
+            "Telegram ID: {telegram_user_id}\n"
+            "Notes: {notes}\n\n"
+            "⬇️ Message sent to customer:\n"
+            "{customer_message}"
+        ),
+        "subs_reminder_summary": (
+            "📬 Subscription reminders summary:\n"
+            "Sent to customers: {sent_to_customers}\n"
+            "Sent to owner: {sent_to_owner}\n"
+            "Failed to send: {failed}\n"
+        ),
+        "subs_edit_offer_saved": "Offer text updated ✅",
+        "subs_edit_reminder_template_saved": "Reminder message template updated ✅",
+        "subs_edit_reminder_days_saved": "Reminder days updated ✅",
+        "subs_current_offer": ("Current renewal offer:\n\n" "{text}"),
+        "subs_current_reminder_template": (
+            "Current reminder message template:\n\n" "{text}"
+        ),
+        "subs_current_reminder_days": "Current reminder days: <b>{days}</b>",
     },
 }
 
@@ -309,6 +527,39 @@ BUTTONS = {
         "permission_manage_admins": "إدارة الآدمنز",
         "manage_users_settings": "إدارة المستخدمين 👥",
         "export_users_to_excel": "تصدير المستخدمين إلى Excel 📊",
+        "subscriptions_crm": "إدارة الاشتراكات 📋",
+        "subs_add_customer": "إضافة عميل ➕",
+        "subs_search": "بحث 🔍",
+        "subs_expiring": "قريبة من الانتهاء ⏳",
+        "subs_expired": "منتهية ❌",
+        "subs_stats": "إحصائيات 📊",
+        "subs_offer_settings": "إعدادات العروض 🔔",
+        "subs_search_by_phone": "حسب الجوال 📱",
+        "subs_search_by_username": "حسب اليوزر 👤",
+        "subs_edit": "تعديل ✏️",
+        "subs_renew": "تجديد 🔄",
+        "subs_delete": "حذف 🗑",
+        "subs_duration_7": "7 أيام",
+        "subs_duration_30": "30 يوم",
+        "subs_duration_90": "90 يوم",
+        "subs_duration_365": "365 يوم",
+        "subs_duration_custom": "مدة مخصصة",
+        "subs_start_today": "اليوم",
+        "subs_start_custom": "تاريخ مخصص",
+        "subs_edit_end_date": "تعديل تاريخ النهاية",
+        "subs_edit_offer_text_btn": "نص عرض التجديد",
+        "subs_edit_reminder_template_btn": "قالب رسالة التنبيه",
+        "subs_edit_reminder_days_btn": "أيام التنبيه",
+        "permission_manage_subscriptions": "إدارة اشتراكات العملاء",
+        "subs_edit_username": "اليوزر",
+        "subs_edit_password": "الباسورد",
+        "subs_edit_duration": "المدة",
+        "subs_edit_end_date_field": "تاريخ النهاية",
+        "subs_edit_notes": "ملاحظات",
+        "subs_edit_telegram": "آيدي تيليجرام",
+        "subs_edit_name": "الاسم",
+        "subs_edit_phone": "الجوال",
+        "subs_edit_type": "نوع الاشتراك",
     },
     models.Language.ENGLISH: {
         "check_joined": "Verify ✅",
@@ -357,6 +608,39 @@ BUTTONS = {
         "permission_manage_admins": "Manage Admins",
         "manage_users_settings": "Manage Users 👥",
         "export_users_to_excel": "Export Users to Excel 📊",
+        "subscriptions_crm": "Subscriptions CRM 📋",
+        "subs_add_customer": "Add customer ➕",
+        "subs_search": "Search 🔍",
+        "subs_expiring": "Expiring soon ⏳",
+        "subs_expired": "Expired ❌",
+        "subs_stats": "Statistics 📊",
+        "subs_offer_settings": "Offer settings 🔔",
+        "subs_search_by_phone": "By phone 📱",
+        "subs_search_by_username": "By username 👤",
+        "subs_edit": "Edit ✏️",
+        "subs_renew": "Renew 🔄",
+        "subs_delete": "Delete 🗑",
+        "subs_duration_7": "7 days",
+        "subs_duration_30": "30 days",
+        "subs_duration_90": "90 days",
+        "subs_duration_365": "365 days",
+        "subs_duration_custom": "Custom duration",
+        "subs_start_today": "Today",
+        "subs_start_custom": "Custom date",
+        "subs_edit_end_date": "Edit end date",
+        "subs_edit_offer_text_btn": "Renewal offer text",
+        "subs_edit_reminder_template_btn": "Reminder message template",
+        "subs_edit_reminder_days_btn": "Reminder days",
+        "permission_manage_subscriptions": "Manage subscriptions",
+        "subs_edit_username": "Username",
+        "subs_edit_password": "Password",
+        "subs_edit_duration": "Duration",
+        "subs_edit_end_date_field": "End date",
+        "subs_edit_notes": "Notes",
+        "subs_edit_telegram": "Telegram ID",
+        "subs_edit_name": "Name",
+        "subs_edit_phone": "Phone",
+        "subs_edit_type": "Subscription type",
     },
 }
 

@@ -14,3 +14,6 @@ class Config:
     DB_PATH = os.getenv("DB_PATH")
     DB_POOL_SIZE = 20
     DB_MAX_OVERFLOW = 10
+
+    TIMEZONE = os.getenv("TIMEZONE", "Asia/Riyadh")
+    REMINDER_CHECK_HOUR = int(os.getenv("REMINDER_CHECK_HOUR", "9"))

@@ -1,5 +1,5 @@
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import (
@@ -79,7 +79,7 @@ EDIT_FIELD, EDIT_VALUE = range(2)
 OFFER_OPTION, OFFER_TEXT, REMINDER_TEMPLATE, REMINDER_DAYS = range(4)
 DELETE_CONFIRM = 0
 DURATION_CHOICE, CUSTOM_DURATION = range(2)
-SEARCH_METHOD, SEARCH_INPUT = range(2)
+SEARCH_METHOD, SEARCH_INPUT, CUSTOMER_PICK = range(3)
 
 
 def _allowed(update: Update) -> bool:
@@ -191,29 +191,6 @@ async def subs_expired_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.callback_query.edit_message_text(
         text=TEXTS[lang]["subs_expired_list_title"].format(count=total),
-        reply_markup=InlineKeyboardMarkup(keyboard),
-    )
-    return ConversationHandler.END
-
-
-async def subs_view_customer(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not _allowed(update):
-        return ConversationHandler.END
-    lang = get_lang(update.effective_user.id)
-    customer_id = int(update.callback_query.data.split("_")[-1])
-    with models.session_scope() as s:
-        customer = s.get(models.Customer, customer_id)
-    if not customer:
-        await update.callback_query.answer(
-            TEXTS[lang]["subs_customer_not_found"],
-            show_alert=True,
-        )
-        return ConversationHandler.END
-    keyboard = build_customer_actions_keyboard(lang, customer_id)
-    keyboard.append(build_back_button(data="subscriptions_crm", lang=lang))
-    keyboard.append(build_back_to_home_page_button(lang=lang)[0])
-    await update.callback_query.edit_message_text(
-        text=format_customer_card(customer, lang),
         reply_markup=InlineKeyboardMarkup(keyboard),
     )
     return ConversationHandler.END
@@ -538,6 +515,7 @@ async def subs_add_end_override(update: Update, context: ContextTypes.DEFAULT_TY
             await update.message.reply_text(TEXTS[lang]["subs_invalid_date"])
             return ADD_END_OVERRIDE
         draft["end_date"] = end
+        draft["duration_days"] = (end - draft["start_date"]).days
         draft["end_date_override"] = True
         await update.message.reply_text(
             text=TEXTS[lang]["subs_enter_notes"],
@@ -706,7 +684,6 @@ async def subs_search_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(found) == 1:
         card = format_customer_card(found[0], lang)
         keyboard = build_customer_actions_keyboard(lang=lang, customer_id=found[0].id)
-        keyboard.append(build_back_button(data="back_to_subs_search_input", lang=lang))
         keyboard.append(build_back_to_home_page_button(lang=lang)[0])
         if update.message:
             await update.message.reply_text(
@@ -732,10 +709,32 @@ async def subs_search_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text=TEXTS[lang]["subs_multiple_found"],
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
-    return ConversationHandler.END
+    return CUSTOMER_PICK
 
 
 back_to_subs_search_input = subs_search_method
+
+
+async def subs_view_customer(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    customer_id = int(update.callback_query.data.split("_")[-1])
+    with models.session_scope() as s:
+        customer = s.get(models.Customer, customer_id)
+    if not customer:
+        await update.callback_query.answer(
+            TEXTS[lang]["subs_customer_not_found"],
+            show_alert=True,
+        )
+        return ConversationHandler.END
+    keyboard = build_customer_actions_keyboard(lang, customer_id)
+    keyboard.append(build_back_to_home_page_button(lang=lang)[0])
+    await update.callback_query.edit_message_text(
+        text=format_customer_card(customer, lang),
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+    return ConversationHandler.END
 
 
 # --- Renew ---
@@ -795,7 +794,6 @@ async def subs_renew_apply(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
     keyboard = build_customer_actions_keyboard(lang=lang, customer_id=customer_id)
-    keyboard.append(build_back_button(data="back_to_subs_search_input", lang=lang))
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.callback_query.edit_message_text(
         text=TEXTS[lang]["subs_renew_success"].format(end_date=end),
@@ -830,7 +828,6 @@ async def subs_renew_custom_duration(
     context.user_data.pop("subs_renew_custom", None)
     context.user_data.pop("subs_renew_id", None)
     keyboard = build_customer_actions_keyboard(lang=lang, customer_id=customer_id)
-    keyboard.append(build_back_button(data="back_to_subs_search_input", lang=lang))
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.message.reply_text(
         text=TEXTS[lang]["subs_renew_success"].format(end_date=end),
@@ -955,6 +952,7 @@ async def subs_edit_save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if days < 1:
                     raise ValueError
                 customer.duration_days = days
+                customer.end_date = customer.start_date + timedelta(days=days)
             except ValueError:
                 await update.message.reply_text(TEXTS[lang]["subs_invalid_duration"])
                 return
@@ -964,6 +962,7 @@ async def subs_edit_save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text(TEXTS[lang]["subs_invalid_date"])
                 return
             customer.end_date = end
+            customer.duration_days = (end - customer.start_date).days
         elif field == "notes":
             customer.notes = value or None
         elif field == "telegram_user_id":
@@ -979,11 +978,11 @@ async def subs_edit_save(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
         elif field == "name":
             customer.name = value or None
+    card = format_customer_card(customer, lang)
     keyboard = build_customer_actions_keyboard(lang=lang, customer_id=customer_id)
-    keyboard.append(build_back_button(data="back_to_subs_search_input", lang=lang))
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.message.reply_text(
-        text=TEXTS[lang]["subs_customer_updated"],
+        text=TEXTS[lang]["subs_customer_updated"].format(card=card),
         reply_markup=InlineKeyboardMarkup(keyboard),
     )
     return ConversationHandler.END
@@ -1326,6 +1325,12 @@ search_customer_handler = ConversationHandler(
                 callback=subs_search_input,
             ),
         ],
+        CUSTOMER_PICK: [
+            CallbackQueryHandler(
+                callback=subs_view_customer,
+                pattern=r"^subs_view_\d+$|^subs_pick_\d+$",
+            )
+        ],
     },
     fallbacks=[
         admin_command,
@@ -1343,10 +1348,6 @@ search_customer_handler = ConversationHandler(
     persistent=True,
 )
 
-subs_view_handler = CallbackQueryHandler(
-    callback=subs_view_customer,
-    pattern=r"^subs_view_\d+$|^subs_pick_\d+$",
-)
 
 subs_renew_handler = ConversationHandler(
     entry_points=[

@@ -172,7 +172,7 @@ TEXTS = {
         "subs_status_expired": "منتهي ❌",
         "subs_edit_choose_field": "اختر الحقل الذي تريد تعديله",
         "subs_edit_enter_value": "أرسل القيمة الجديدة",
-        "subs_customer_updated": "تم تحديث بيانات العميل ✅",
+        "subs_customer_updated": "تم تحديث بيانات العميل ✅\n\n{card}",
         "subs_renew_choose_duration": "اختر مدة التجديد",
         "subs_renew_success": (
             "تم تجديد الاشتراك ✅\n" "تاريخ النهاية الجديد: <b>{end_date}</b>"
@@ -413,7 +413,7 @@ TEXTS = {
         "subs_status_expired": "Expired ❌",
         "subs_edit_choose_field": "Choose field to edit",
         "subs_edit_enter_value": "Send new value",
-        "subs_customer_updated": "Customer updated successfully ✅",
+        "subs_customer_updated": "Customer updated successfully ✅\n\n{card}",
         "subs_renew_choose_duration": "Choose renewal duration",
         "subs_renew_success": (
             "Subscription renewed ✅\n" "New end date: <b>{end_date}</b>"

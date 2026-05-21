@@ -60,7 +60,7 @@ def _build_owner_reminder_message(
 async def check_expiring_subscriptions(context: ContextTypes.DEFAULT_TYPE):
     today = date.today()
     sent_to_customers = 0
-    sent_to_owner = 0
+    sent_to_channel = 0
     failed = 0
     notifier = get_notifier()
 
@@ -93,15 +93,15 @@ async def check_expiring_subscriptions(context: ContextTypes.DEFAULT_TYPE):
             owner_body = _build_owner_reminder_message(
                 customer, days_left, body, owner_lang
             )
-            customer_ok, owner_ok = await notifier.send_expiry_reminder(
+            customer_ok, channel_ok = await notifier.send_expiry_reminder(
                 bot=context.bot,
                 customer=customer,
                 message_body=body,
-                owner_id=Config.OWNER_ID,
-                owner_message=owner_body,
+                reminders_channel_id=Config.REMINDERS_CHANNEL_ID,
+                channel_message=owner_body,
             )
 
-            delivered = customer_ok or owner_ok
+            delivered = customer_ok or channel_ok
             if delivered:
                 s.add(
                     SubscriptionReminder(
@@ -111,28 +111,28 @@ async def check_expiring_subscriptions(context: ContextTypes.DEFAULT_TYPE):
                 )
                 if customer_ok:
                     sent_to_customers += 1
-                if owner_ok:
-                    sent_to_owner += 1
+                if channel_ok:
+                    sent_to_channel += 1
             else:
                 failed += 1
 
-    if sent_to_customers or sent_to_owner or failed:
+    if sent_to_customers or sent_to_channel or failed:
         try:
             summary = TEXTS[get_lang(Config.OWNER_ID)]["subs_reminder_summary"].format(
                 sent_to_customers=sent_to_customers,
-                sent_to_owner=sent_to_owner,
+                sent_to_channel=sent_to_channel,
                 failed=failed,
             )
             await context.bot.send_message(
-                chat_id=Config.OWNER_ID,
+                chat_id=Config.REMINDERS_CHANNEL_ID,
                 text=summary,
             )
         except Exception as e:
-            logger.error("Failed to send reminder summary to owner: %s", e)
+            logger.error("Failed to send reminder summary to channel: %s", e)
 
     logger.info(
-        "Subscription reminders: sent_to_customers=%s sent_to_owner=%s failed=%s",
+        "Subscription reminders: sent_to_customers=%s sent_to_channel=%s failed=%s",
         sent_to_customers,
-        sent_to_owner,
+        sent_to_channel,
         failed,
     )

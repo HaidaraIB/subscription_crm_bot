@@ -10,6 +10,7 @@ class Config:
     BOT_TOKEN = os.getenv("BOT_TOKEN")
     OWNER_ID = int(os.getenv("OWNER_ID"))
     ERRORS_CHANNEL = int(os.getenv("ERRORS_CHANNEL"))
+    REMINDERS_CHANNEL_ID = int(os.getenv("REMINDERS_CHANNEL_ID"))
 
     DB_PATH = os.getenv("DB_PATH")
     DB_POOL_SIZE = 20

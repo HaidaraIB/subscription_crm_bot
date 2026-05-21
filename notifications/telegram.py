@@ -23,8 +23,8 @@ class TelegramNotifier:
         customer: models.Customer,
         message_body: str,
         *,
-        owner_id: int | None = None,
-        owner_message: str | None = None,
+        reminders_channel_id: int | None = None,
+        channel_message: str | None = None,
     ) -> tuple[bool, bool]:
         customer_ok = False
         if customer.telegram_user_id:
@@ -32,8 +32,10 @@ class TelegramNotifier:
                 bot, customer.telegram_user_id, message_body
             )
 
-        owner_ok = False
-        if owner_id and owner_id != customer.telegram_user_id and owner_message:
-            owner_ok = await self._send_message(bot, owner_id, owner_message)
+        channel_ok = False
+        if reminders_channel_id and channel_message:
+            channel_ok = await self._send_message(
+                bot, reminders_channel_id, channel_message
+            )
 
-        return customer_ok, owner_ok
+        return customer_ok, channel_ok

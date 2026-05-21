@@ -10,7 +10,7 @@ class ReminderNotifier(Protocol):
         customer: models.Customer,
         message_body: str,
         *,
-        owner_id: int | None = None,
-        owner_message: str | None = None,
+        reminders_channel_id: int | None = None,
+        channel_message: str | None = None,
     ) -> tuple[bool, bool]:
         ...

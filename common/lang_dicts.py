@@ -229,7 +229,7 @@ TEXTS = {
         "subs_reminder_summary": (
             "📬 ملخص تنبيهات الاشتراكات:\n"
             "تم الإرسال للعميل: {sent_to_customers}\n"
-            "تم الإرسال للمالك: {sent_to_owner}\n"
+            "تم الإرسال للقناة: {sent_to_channel}\n"
             "فشل الإرسال: {failed}\n"
         ),
         "subs_edit_offer_saved": "تم تحديث نص العرض ✅",
@@ -465,7 +465,7 @@ TEXTS = {
         "subs_reminder_summary": (
             "📬 Subscription reminders summary:\n"
             "Sent to customers: {sent_to_customers}\n"
-            "Sent to owner: {sent_to_owner}\n"
+            "Sent to channel: {sent_to_channel}\n"
             "Failed to send: {failed}\n"
         ),
         "subs_edit_offer_saved": "Offer text updated ✅",

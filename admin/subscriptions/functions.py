@@ -11,7 +11,7 @@ PAGE_SIZE = 10
 def preview_customer_card(draft: dict, lang: models.Language) -> str:
     customer = models.Customer(
         name=draft.get("name"),
-        phone=draft["service_username"],
+        phone=draft["phone"],
         service_username=draft["service_username"],
         service_password=draft["service_password"],
         subscription_type=draft["subscription_type"],

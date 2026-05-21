@@ -399,23 +399,29 @@ async def subs_add_duration_custom(update: Update, context: ContextTypes.DEFAULT
     if not _allowed(update):
         return ConversationHandler.END
     lang = get_lang(update.effective_user.id)
-    try:
-        days = int(update.message.text.strip())
-        if days < 1:
-            raise ValueError
-    except ValueError:
-        await update.message.reply_text(TEXTS[lang]["subs_invalid_duration"])
-        return ADD_DURATION_CUSTOM
-    _draft(context)["duration_days"] = days
     keyboard = build_start_date_keyboard(lang)
     keyboard.append(
         build_back_button(data="back_to_subs_add_duration_custom", lang=lang)
     )
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
-    await update.message.reply_text(
-        text=TEXTS[lang]["subs_choose_start_date"],
-        reply_markup=InlineKeyboardMarkup(keyboard),
-    )
+    if update.message:
+        try:
+            days = int(update.message.text.strip())
+            if days < 1:
+                raise ValueError
+        except ValueError:
+            await update.message.reply_text(TEXTS[lang]["subs_invalid_duration"])
+            return ADD_DURATION_CUSTOM
+        _draft(context)["duration_days"] = days
+        await update.message.reply_text(
+            text=TEXTS[lang]["subs_choose_start_date"],
+            reply_markup=InlineKeyboardMarkup(keyboard),
+        )
+    else:
+        await update.callback_query.edit_message_text(
+            text=TEXTS[lang]["subs_choose_start_date"],
+            reply_markup=InlineKeyboardMarkup(keyboard),
+        )
     return ADD_START
 
 

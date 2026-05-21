@@ -23,7 +23,7 @@ from common.keyboards import (
 )
 from common.lang_dicts import TEXTS, BUTTONS, get_lang
 from custom_filters import PrivateChatAndAdmin, PermissionFilter
-from start import admin_command
+from start import admin_command, start_command
 import models
 
 
@@ -272,6 +272,7 @@ add_force_join_chat_handler = ConversationHandler(
     fallbacks=[
         force_join_chats_settings_handler,
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
     ],
 )
@@ -351,6 +352,7 @@ remove_force_join_chat_handler = ConversationHandler(
     fallbacks=[
         force_join_chats_settings_handler,
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
     ],
 )

@@ -22,7 +22,7 @@ from common.keyboards import (
 )
 from common.back_to_home_page import back_to_admin_home_page_handler
 from common.lang_dicts import TEXTS, BUTTONS, get_lang
-from start import admin_command
+from start import admin_command, start_command
 import models
 
 USER, CONFIRM = range(2)
@@ -161,6 +161,7 @@ ban_unban_user_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
     ],
 )

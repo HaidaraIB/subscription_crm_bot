@@ -53,7 +53,7 @@ from models.BotSettings import (
     SETTING_REMINDER_DAYS,
     SETTING_REMINDER_TEMPLATE,
 )
-from start import admin_command
+from start import admin_command, start_command
 import models
 
 logger = logging.getLogger(__name__)
@@ -1245,6 +1245,7 @@ add_customer_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
         subscriptions_crm_handler,
         CallbackQueryHandler(
@@ -1322,6 +1323,7 @@ search_customer_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
         subscriptions_crm_handler,
         CallbackQueryHandler(
@@ -1363,6 +1365,7 @@ subs_renew_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
         subscriptions_crm_handler,
         CallbackQueryHandler(back_to_subs_renew_start, r"^back_to_subs_renew_start$"),
@@ -1424,6 +1427,7 @@ edit_customer_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
         subscriptions_crm_handler,
         CallbackQueryHandler(back_to_subs_edit_menu, r"^back_to_subs_edit_menu$"),
@@ -1479,6 +1483,7 @@ offer_settings_handler = ConversationHandler(
     },
     fallbacks=[
         admin_command,
+        start_command,
         back_to_admin_home_page_handler,
         subscriptions_crm_handler,
         CallbackQueryHandler(

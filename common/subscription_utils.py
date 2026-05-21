@@ -45,6 +45,11 @@ def parse_date(text: str) -> date | None:
     return None
 
 
+def strip_html_tags(text: str) -> str:
+    """Plain text for Telegram <code>/<pre> blocks (no nested HTML formatting)."""
+    return re.sub(r"<[^>]+>", "", text or "")
+
+
 def parse_reminder_days(value: str) -> list[int]:
     days = []
     for part in (value or "3").split(","):

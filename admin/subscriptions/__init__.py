@@ -1,5 +1,6 @@
 from admin.subscriptions.handlers import (
     subscriptions_crm_handler,
+    subs_run_reminders_now_handler,
     subs_stats_handler,
     subs_expiring_handler,
     subs_expired_handler,

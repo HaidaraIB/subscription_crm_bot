@@ -224,13 +224,18 @@ TEXTS = {
             "آيدي تيليجرام: {telegram_user_id}\n"
             "ملاحظات: {notes}\n\n"
             "⬇️ نص الرسالة المرسلة للعميل:\n"
-            "{customer_message}"
+            "{customer_message}\n"
         ),
         "subs_reminder_summary": (
             "📬 ملخص تنبيهات الاشتراكات:\n"
             "تم الإرسال للعميل: {sent_to_customers}\n"
             "تم الإرسال للقناة: {sent_to_channel}\n"
             "فشل الإرسال: {failed}\n"
+        ),
+        "subs_reminders_running": "جاري تشغيل التنبيهات…",
+        "subs_reminders_run_none": (
+            "لا توجد اشتراكات تحتاج تنبيهاً الآن "
+            "(لا يوجد تطابق لأيام التنبيه أو تم الإرسال مسبقاً اليوم)."
         ),
         "subs_edit_offer_saved": "تم تحديث نص العرض ✅",
         "subs_edit_reminder_template_saved": "تم تحديث قالب رسالة التنبيه ✅",
@@ -460,13 +465,18 @@ TEXTS = {
             "Telegram ID: {telegram_user_id}\n"
             "Notes: {notes}\n\n"
             "⬇️ Message sent to customer:\n"
-            "{customer_message}"
+            "{customer_message}\n"
         ),
         "subs_reminder_summary": (
             "📬 Subscription reminders summary:\n"
             "Sent to customers: {sent_to_customers}\n"
             "Sent to channel: {sent_to_channel}\n"
             "Failed to send: {failed}\n"
+        ),
+        "subs_reminders_running": "Running reminders…",
+        "subs_reminders_run_none": (
+            "No subscriptions need a reminder right now "
+            "(no match for reminder days, or already sent today)."
         ),
         "subs_edit_offer_saved": "Offer text updated ✅",
         "subs_edit_reminder_template_saved": "Reminder message template updated ✅",
@@ -534,6 +544,7 @@ BUTTONS = {
         "subs_expired": "منتهية ❌",
         "subs_stats": "إحصائيات 📊",
         "subs_offer_settings": "إعدادات العروض 🔔",
+        "subs_run_reminders_now": "تشغيل التنبيهات الآن 🔔",
         "subs_search_by_phone": "حسب الجوال 📱",
         "subs_search_by_username": "حسب اليوزر 👤",
         "subs_edit": "تعديل ✏️",
@@ -615,6 +626,7 @@ BUTTONS = {
         "subs_expired": "Expired ❌",
         "subs_stats": "Statistics 📊",
         "subs_offer_settings": "Offer settings 🔔",
+        "subs_run_reminders_now": "Run reminders now 🔔",
         "subs_search_by_phone": "By phone 📱",
         "subs_search_by_username": "By username 👤",
         "subs_edit": "Edit ✏️",

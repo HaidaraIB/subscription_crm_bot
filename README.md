@@ -20,7 +20,7 @@ Telegram bot for managing customer subscriptions (IPTV/service accounts): store 
 
 ## Reminders
 
-Daily job runs at `REMINDER_CHECK_HOUR` in `TIMEZONE`. Customers with a linked Telegram user ID receive a reminder when their subscription is N days from ending (N from bot settings). Staff copies and the daily summary are posted to the Telegram channel set in `REMINDERS_CHANNEL_ID` (add the bot as an admin in that channel).
+Daily jobs run at each hour in `REMINDER_CHECK_HOURS` (default `9,21` = 9:00 and 21:00) in `TIMEZONE`. Customers with a linked Telegram user ID receive a reminder when their subscription is N days from ending (N from bot settings). Staff copies and the daily summary are posted to the Telegram channel set in `REMINDERS_CHANNEL_ID` (add the bot as an admin in that channel).
 
 ## Data
 

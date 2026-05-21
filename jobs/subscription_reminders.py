@@ -1,3 +1,4 @@
+import html
 import logging
 from datetime import date
 
@@ -53,11 +54,13 @@ def _build_owner_reminder_message(
         days_left=days_left,
         telegram_user_id=telegram_id,
         notes=customer.notes or texts["subs_notes_none"],
-        customer_message=customer_message,
+        customer_message=f"<code>\n{html.escape(customer_message)}\n</code>",
     )
 
 
-async def check_expiring_subscriptions(context: ContextTypes.DEFAULT_TYPE):
+async def check_expiring_subscriptions(
+    context: ContextTypes.DEFAULT_TYPE,
+) -> tuple[int, int, int]:
     today = date.today()
     sent_to_customers = 0
     sent_to_channel = 0
@@ -136,3 +139,4 @@ async def check_expiring_subscriptions(context: ContextTypes.DEFAULT_TYPE):
         sent_to_channel,
         failed,
     )
+    return sent_to_customers, sent_to_channel, failed

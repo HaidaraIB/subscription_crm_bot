@@ -42,6 +42,12 @@ def build_subscriptions_main_keyboard(lang: models.Language):
                 callback_data="subs_offer_settings",
             ),
         ],
+        [
+            InlineKeyboardButton(
+                BUTTONS[lang]["subs_run_reminders_now"],
+                callback_data="subs_run_reminders_now",
+            ),
+        ],
     ]
     return keyboard
 

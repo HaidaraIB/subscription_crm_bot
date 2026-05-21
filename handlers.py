@@ -66,6 +66,7 @@ def setup_and_run():
     app.add_handler(search_customer_handler)
     app.add_handler(edit_customer_handler)
     app.add_handler(offer_settings_handler)
+    app.add_handler(subs_run_reminders_now_handler)
     app.add_handler(subs_stats_handler)
     app.add_handler(subs_expiring_handler)
     app.add_handler(subs_expired_handler)
@@ -83,18 +84,18 @@ def setup_and_run():
 
     app.add_error_handler(error_handler)
 
-    app.job_queue.run_daily(
-        callback=check_expiring_subscriptions,
-        time=datetime.time(
-            Config.REMINDER_CHECK_HOUR, 0, tzinfo=ZoneInfo(Config.TIMEZONE)
-        ),
-        name="subscription_expiry_reminders",
-        job_kwargs={
-            "id": "subscription_expiry_reminders",
-            "misfire_grace_time": None,
-            "coalesce": True,
-            "replace_existing": True,
-        },
-    )
+    reminder_tz = ZoneInfo(Config.TIMEZONE)
+    for hour in Config.REMINDER_CHECK_HOURS:
+        app.job_queue.run_daily(
+            callback=check_expiring_subscriptions,
+            time=datetime.time(hour, 0, tzinfo=reminder_tz),
+            name=f"subscription_expiry_reminders_{hour:02d}",
+            job_kwargs={
+                "id": f"subscription_expiry_reminders_{hour:02d}",
+                "misfire_grace_time": None,
+                "coalesce": True,
+                "replace_existing": True,
+            },
+        )
 
     app.run_polling(allowed_updates=Update.ALL_TYPES, close_loop=False)

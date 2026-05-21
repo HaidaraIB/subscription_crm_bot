@@ -23,6 +23,7 @@ from common.subscription_utils import (
     parse_date,
     compute_end_date,
 )
+from jobs.subscription_reminders import check_expiring_subscriptions
 from admin.subscriptions.keyboards import (
     build_confirm_add_button,
     build_delete_confirm_button,
@@ -101,6 +102,33 @@ async def subscriptions_crm_menu(update: Update, context: ContextTypes.DEFAULT_T
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.callback_query.edit_message_text(
         text=TEXTS[lang]["subscriptions_crm_title"],
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+    return ConversationHandler.END
+
+
+async def subs_run_reminders_now(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    await update.callback_query.answer(
+        text=TEXTS[lang]["subs_reminders_running"],
+    )
+    sent_to_customers, sent_to_channel, failed = await check_expiring_subscriptions(
+        context
+    )
+    if sent_to_customers or sent_to_channel or failed:
+        result = TEXTS[lang]["subs_reminder_summary"].format(
+            sent_to_customers=sent_to_customers,
+            sent_to_channel=sent_to_channel,
+            failed=failed,
+        )
+    else:
+        result = TEXTS[lang]["subs_reminders_run_none"]
+    keyboard = build_subscriptions_main_keyboard(lang)
+    keyboard.append(build_back_to_home_page_button(lang=lang)[0])
+    await update.callback_query.edit_message_text(
+        text=TEXTS[lang]["subscriptions_crm_title"] + "\n\n" + result,
         reply_markup=InlineKeyboardMarkup(keyboard),
     )
     return ConversationHandler.END
@@ -1100,6 +1128,11 @@ async def subs_edit_reminder_days_save(
 subscriptions_crm_handler = CallbackQueryHandler(
     callback=subscriptions_crm_menu,
     pattern=r"^subscriptions_crm$",
+)
+
+subs_run_reminders_now_handler = CallbackQueryHandler(
+    callback=subs_run_reminders_now,
+    pattern=r"^subs_run_reminders_now$",
 )
 
 subs_stats_handler = CallbackQueryHandler(

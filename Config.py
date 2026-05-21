@@ -17,4 +17,18 @@ class Config:
     DB_MAX_OVERFLOW = 10
 
     TIMEZONE = os.getenv("TIMEZONE", "Asia/Riyadh")
-    REMINDER_CHECK_HOUR = int(os.getenv("REMINDER_CHECK_HOUR", "9"))
+
+    @staticmethod
+    def _parse_reminder_check_hours() -> tuple[int, ...]:
+        hours_str = os.getenv("REMINDER_CHECK_HOURS")
+        if hours_str:
+            return tuple(
+                int(h.strip())
+                for h in hours_str.split(",")
+                if h.strip()
+            )
+        morning = int(os.getenv("REMINDER_CHECK_HOUR", "9"))
+        evening = (morning + 12) % 24
+        return (morning, evening) if morning != evening else (morning,)
+
+    REMINDER_CHECK_HOURS = _parse_reminder_check_hours()

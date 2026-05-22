@@ -1,5 +1,8 @@
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+
+DISPLAY_DATE_FMT = "%d/%m/%Y"
+DATE_INPUT_FORMATS = ("%d/%m/%Y", "%Y-%m-%d")
 
 
 def normalize_phone(phone: str) -> str:
@@ -33,12 +36,14 @@ def days_until_expiry(end_date: date, today: date | None = None) -> int:
     return (end_date - today).days
 
 
+def format_date(value: date) -> str:
+    return value.strftime(DISPLAY_DATE_FMT)
+
+
 def parse_date(text: str) -> date | None:
     text = (text or "").strip()
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y"):
+    for fmt in DATE_INPUT_FORMATS:
         try:
-            from datetime import datetime
-
             return datetime.strptime(text, fmt).date()
         except ValueError:
             continue

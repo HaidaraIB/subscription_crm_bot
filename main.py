@@ -11,13 +11,6 @@ filterwarnings(
     action="ignore", message=r".*invalid escape sequence.*", category=SyntaxWarning
 )
 
-import logging
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
-)
-
 from handlers import setup_and_run
 
 if __name__ == "__main__":

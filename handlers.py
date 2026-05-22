@@ -1,4 +1,5 @@
 import datetime
+import logging
 from zoneinfo import ZoneInfo
 
 from telegram import Update
@@ -29,9 +30,18 @@ from jobs.subscription_reminders import check_expiring_subscriptions
 from MyApp import MyApp
 
 
+def _configure_logging() -> None:
+    logging.basicConfig(
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        level=logging.INFO,
+        force=True,
+    )
+
+
 def setup_and_run():
     create_folders()
     init_db()
+    _configure_logging()
 
     app = MyApp.build_app()
 
@@ -69,6 +79,9 @@ def setup_and_run():
     app.add_handler(subs_delete_prompt_handler)
     app.add_handler(subs_expiring_handler)
     app.add_handler(subs_expired_handler)
+    app.add_handler(subs_view_handler)
+    app.add_handler(subs_export_excel_handler)
+    app.add_handler(import_customer_handler)
     app.add_handler(subs_stats_handler)
     app.add_handler(offer_settings_handler)
     app.add_handler(subs_run_reminders_now_handler)

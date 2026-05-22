@@ -1,5 +1,7 @@
 import logging
-from datetime import date, timedelta
+import os
+import tempfile
+from datetime import date, datetime, timedelta
 
 from telegram import Update, InlineKeyboardMarkup
 from telegram.ext import (
@@ -21,6 +23,7 @@ from common.back_to_home_page import back_to_admin_home_page_handler
 from common.subscription_utils import (
     normalize_phone,
     parse_date,
+    format_date,
     compute_end_date,
 )
 from jobs.subscription_reminders import check_expiring_subscriptions
@@ -37,6 +40,11 @@ from admin.subscriptions.keyboards import (
     build_edit_fields_keyboard,
     build_list_keyboard,
     build_offer_settings_keyboard,
+)
+from admin.subscriptions.excel_io import (
+    export_customers_workbook,
+    import_customers_workbook,
+    safe_unlink,
 )
 from admin.subscriptions.functions import (
     format_customer_card,
@@ -80,6 +88,7 @@ OFFER_OPTION, OFFER_TEXT, REMINDER_TEMPLATE, REMINDER_DAYS = range(4)
 DELETE_CONFIRM = 0
 DURATION_CHOICE, CUSTOM_DURATION = range(2)
 SEARCH_METHOD, SEARCH_INPUT, CUSTOMER_PICK = range(3)
+IMPORT_FILE = 0
 
 
 def _allowed(update: Update) -> bool:
@@ -163,7 +172,7 @@ async def subs_expiring_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
             show_alert=True,
         )
         return ConversationHandler.END
-    keyboard = build_list_keyboard(items, lang, "expiring", page, total)
+    keyboard = build_list_keyboard(items, "expiring", page, total)
     keyboard.append(build_back_button("subscriptions_crm", lang))
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.callback_query.edit_message_text(
@@ -186,7 +195,7 @@ async def subs_expired_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
             show_alert=True,
         )
         return ConversationHandler.END
-    keyboard = build_list_keyboard(items, lang, "expired", page, total)
+    keyboard = build_list_keyboard(items, "expired", page, total)
     keyboard.append(build_back_button("subscriptions_crm", lang))
     keyboard.append(build_back_to_home_page_button(lang=lang)[0])
     await update.callback_query.edit_message_text(
@@ -422,8 +431,8 @@ async def subs_add_start_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         draft["end_date"] = end
         await update.callback_query.edit_message_text(
             text=TEXTS[lang]["subs_confirm_dates"].format(
-                start=draft["start_date"].isoformat(),
-                end=end.isoformat(),
+                start=format_date(draft["start_date"]),
+                end=format_date(end),
             ),
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
@@ -455,16 +464,16 @@ async def subs_add_start_custom(update: Update, context: ContextTypes.DEFAULT_TY
         draft["end_date"] = compute_end_date(start, draft["duration_days"])
         await update.message.reply_text(
             text=TEXTS[lang]["subs_confirm_dates"].format(
-                start=draft["start_date"].isoformat(),
-                end=draft["end_date"].isoformat(),
+                start=format_date(draft["start_date"]),
+                end=format_date(draft["end_date"]),
             ),
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
     else:
         await update.callback_query.edit_message_text(
             text=TEXTS[lang]["subs_confirm_dates"].format(
-                start=draft["start_date"].isoformat(),
-                end=draft["end_date"].isoformat(),
+                start=format_date(draft["start_date"]),
+                end=format_date(draft["end_date"]),
             ),
             reply_markup=InlineKeyboardMarkup(keyboard),
         )
@@ -786,7 +795,7 @@ async def subs_renew_apply(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if customer:
             customer.renew(days)
             clear_reminders_for_customer(s, customer_id)
-            end = customer.end_date.isoformat()
+            end = format_date(customer.end_date)
         else:
             await update.callback_query.answer(
                 TEXTS[lang]["subs_customer_not_found"],
@@ -824,7 +833,7 @@ async def subs_renew_custom_duration(
         if customer:
             customer.renew(days)
             clear_reminders_for_customer(s, customer_id)
-            end = customer.end_date.isoformat()
+            end = format_date(customer.end_date)
     context.user_data.pop("subs_renew_custom", None)
     context.user_data.pop("subs_renew_id", None)
     keyboard = build_customer_actions_keyboard(lang=lang, customer_id=customer_id)
@@ -1129,6 +1138,119 @@ async def subs_edit_reminder_days_save(
     return ConversationHandler.END
 
 
+# --- Excel import/export ---
+async def subs_export_excel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    await update.callback_query.answer(
+        text=TEXTS[lang]["subs_exporting_customers"],
+        show_alert=True,
+    )
+    await update.callback_query.delete_message()
+
+    excel_path = None
+    try:
+        with models.session_scope() as s:
+            excel_path = export_customers_workbook(lang, s)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"customers_export_{timestamp}.xlsx"
+        with open(excel_path, "rb") as excel_file:
+            await context.bot.send_document(
+                chat_id=update.effective_user.id,
+                document=excel_file,
+                filename=filename,
+            )
+        text = TEXTS[lang]["subs_customers_exported_success"]
+    except Exception:
+        logger.exception("Customer export failed")
+        text = TEXTS[lang]["export_error"]
+    finally:
+        safe_unlink(excel_path)
+
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=text + "\n\n" + TEXTS[lang]["continue_with_admin_command"],
+    )
+    return ConversationHandler.END
+
+
+async def subs_import_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    keyboard = [
+        build_back_button("subscriptions_crm", lang),
+        build_back_to_home_page_button(lang=lang)[0],
+    ]
+    await update.callback_query.edit_message_text(
+        text=TEXTS[lang]["subs_import_instruction"],
+        reply_markup=InlineKeyboardMarkup(keyboard),
+    )
+    return IMPORT_FILE
+
+
+async def subs_import_invalid_file(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    await update.message.reply_text(TEXTS[lang]["subs_import_invalid_file"])
+    return IMPORT_FILE
+
+
+async def subs_import_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not _allowed(update):
+        return ConversationHandler.END
+    lang = get_lang(update.effective_user.id)
+    doc = update.message.document
+    if not doc or not (doc.file_name or "").lower().endswith(".xlsx"):
+        await update.message.reply_text(TEXTS[lang]["subs_import_invalid_file"])
+        return IMPORT_FILE
+
+    await update.message.reply_text(TEXTS[lang]["subs_importing_customers"])
+    excel_path = None
+    try:
+        tg_file = await context.bot.get_file(doc.file_id)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+            excel_path = tmp.name
+        await tg_file.download_to_drive(excel_path)
+        with models.session_scope() as s:
+            result = import_customers_workbook(excel_path, lang, s)
+    except Exception:
+        logger.exception("Customer import failed")
+        await update.message.reply_text(TEXTS[lang]["export_error"])
+        safe_unlink(excel_path)
+        return ConversationHandler.END
+    finally:
+        safe_unlink(excel_path)
+
+    summary = TEXTS[lang]["subs_import_result"].format(
+        created=result.created,
+        updated=result.updated,
+        skipped=result.skipped,
+        error_count=len(result.errors),
+    )
+    if result.errors:
+        lines = "\n".join(f"{e.row}: {e.message}" for e in result.errors[:10])
+        if len(result.errors) > 10:
+            lines += f"\n… (+{len(result.errors) - 10})"
+        summary += "\n\n" + TEXTS[lang]["subs_import_errors_sample"].format(
+            lines=lines
+        )
+    elif not result.created and not result.updated:
+        summary = TEXTS[lang]["subs_import_nothing_done"]
+
+    await update.message.reply_text(
+        summary,
+        reply_markup=build_admin_keyboard(
+            lang=lang, user_id=update.effective_user.id
+        ),
+    )
+    return ConversationHandler.END
+
+
 # --- Handler registration ---
 subscriptions_crm_handler = CallbackQueryHandler(
     callback=subscriptions_crm_menu,
@@ -1153,6 +1275,49 @@ subs_expiring_handler = CallbackQueryHandler(
 subs_expired_handler = CallbackQueryHandler(
     callback=subs_expired_list,
     pattern=r"^subs_expired_\d+$",
+)
+
+subs_view_handler = CallbackQueryHandler(
+    callback=subs_view_customer,
+    pattern=r"^subs_view_\d+$",
+)
+
+subs_export_excel_handler = CallbackQueryHandler(
+    callback=subs_export_excel,
+    pattern=r"^subs_export_excel$",
+)
+
+import_customer_handler = ConversationHandler(
+    entry_points=[
+        CallbackQueryHandler(
+            callback=subs_import_start,
+            pattern=r"^subs_import_excel$",
+        )
+    ],
+    states={
+        IMPORT_FILE: [
+            MessageHandler(
+                filters.Document.FileExtension("xlsx"),
+                callback=subs_import_file,
+            ),
+            MessageHandler(
+                filters.ALL & ~filters.COMMAND,
+                callback=subs_import_invalid_file,
+            ),
+        ],
+    },
+    fallbacks=[
+        admin_command,
+        start_command,
+        back_to_admin_home_page_handler,
+        subscriptions_crm_handler,
+        CallbackQueryHandler(
+            callback=subscriptions_crm_menu,
+            pattern=r"^subscriptions_crm$",
+        ),
+    ],
+    name="subs_import_excel",
+    persistent=True,
 )
 
 add_customer_handler = ConversationHandler(
@@ -1328,7 +1493,7 @@ search_customer_handler = ConversationHandler(
         CUSTOMER_PICK: [
             CallbackQueryHandler(
                 callback=subs_view_customer,
-                pattern=r"^subs_view_\d+$|^subs_pick_\d+$",
+                pattern=r"^subs_pick_\d+$",
             )
         ],
     },

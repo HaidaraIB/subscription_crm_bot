@@ -9,7 +9,7 @@ class Customer(Base):
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
     name = sa.Column(sa.String, nullable=True)
-    phone = sa.Column(sa.String, nullable=False, unique=True, index=True)
+    phone = sa.Column(sa.String, nullable=False, index=True)
     service_username = sa.Column(sa.String, nullable=False, index=True)
     service_password = sa.Column(sa.String, nullable=False)
     subscription_type = sa.Column(sa.String, nullable=False, default="")

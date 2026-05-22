@@ -16,6 +16,7 @@ Telegram bot for managing customer subscriptions (IPTV/service accounts): store 
    - Search by phone or service username
    - Edit, renew, or delete records
    - View expiring/expired lists and statistics
+   - Export all customers to Excel or import from an `.xlsx` file (same column layout as export; updates by customer ID)
    - Configure renewal offer text and reminder days (e.g. `3,1` = 3 days and 1 day before expiry)
 
 ## Reminders
@@ -24,7 +25,18 @@ Daily jobs run at each hour in `REMINDER_CHECK_HOURS` (default `9,21` = 9:00 and
 
 ## Data
 
-SQLite database path is set via `DB_PATH`. Back up the `data/` folder before updates.
+- **Database:** SQLite (`DB_PATH` in `.env`, default `data/database.sqlite3`)
+- **Migrations:** [Alembic](https://alembic.sqlalchemy.org/) — applied automatically on bot startup (`init_db` → `alembic upgrade head`)
+
+Manual migration commands (from project root):
+
+```bash
+alembic upgrade head
+alembic revision --autogenerate -m "describe change"
+alembic downgrade -1
+```
+
+Back up the `data/` folder before updates.
 
 ## Security
 

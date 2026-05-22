@@ -127,6 +127,18 @@ TEXTS = {
         "excel_unknown": "غير معروف",
         "excel_yes": "نعم",
         "excel_no": "لا",
+        "excel_customer_id": "المعرف",
+        "excel_customer_name": "الاسم",
+        "excel_phone": "الجوال",
+        "excel_service_username": "يوزر الاشتراك",
+        "excel_service_password": "كلمة المرور",
+        "excel_subscription_type": "نوع الاشتراك",
+        "excel_duration_days": "المدة (أيام)",
+        "excel_start_date": "تاريخ البداية",
+        "excel_end_date": "تاريخ النهاية",
+        "excel_telegram_user_id": "آيدي تيليجرام",
+        "excel_notes": "ملاحظات",
+        "excel_customer_status": "الحالة",
         "lang_arabic": "العربية",
         "lang_english": "English",
         "permission_manage_subscriptions": "إدارة اشتراكات العملاء",
@@ -139,13 +151,13 @@ TEXTS = {
         "subs_choose_duration": "اختر مدة الاشتراك بالأيام",
         "subs_enter_custom_duration": "أرسل عدد الأيام (رقم)",
         "subs_choose_start_date": "اختر تاريخ بداية الاشتراك",
-        "subs_enter_start_date": "أرسل تاريخ البداية (YYYY-MM-DD)",
+        "subs_enter_start_date": "أرسل تاريخ البداية (DD/MM/YYYY أو YYYY-MM-DD)",
         "subs_confirm_dates": (
             "تاريخ البداية: <b>{start}</b>\n"
             "تاريخ النهاية: <b>{end}</b>\n\n"
             "اضغط تأكيد أو عدّل تاريخ النهاية"
         ),
-        "subs_enter_end_date": "أرسل تاريخ النهاية (YYYY-MM-DD)",
+        "subs_enter_end_date": "أرسل تاريخ النهاية (DD/MM/YYYY أو YYYY-MM-DD)",
         "subs_enter_notes": "أرسل ملاحظات إضافية",
         "subs_enter_telegram_id": "أرسل آيدي تيليجرام العميل للتنبيهات",
         "subs_confirm_add": ("تأكيد إضافة العميل:\n\n" "{card}"),
@@ -203,8 +215,7 @@ TEXTS = {
         "subs_edit_reminder_days": "أرسل أيام التنبيه قبل الانتهاء (مفصولة بفاصلة، مثال: 3,1)",
         "subs_settings_saved": "تم حفظ الإعدادات ✅",
         "subs_invalid_phone": "رقم الجوال غير صالح ❌",
-        "subs_duplicate_phone": "رقم الجوال مسجل مسبقاً ❌",
-        "subs_invalid_date": "تاريخ غير صالح. استخدم YYYY-MM-DD ❌",
+        "subs_invalid_date": "تاريخ غير صالح. استخدم DD/MM/YYYY أو YYYY-MM-DD ❌",
         "subs_invalid_duration": "عدد الأيام غير صالح ❌",
         "subs_invalid_telegram_id": "آيدي تيليجرام غير صالح ❌",
         "subs_name_none": "—",
@@ -243,6 +254,30 @@ TEXTS = {
         "subs_current_offer": "نص عرض التجديد الحالي:\n\n{text}",
         "subs_current_reminder_template": "قالب رسالة التنبيه الحالي:\n\n{text}",
         "subs_current_reminder_days": "أيام التنبيه الحالية: <b>{days}</b>",
+        "subs_exporting_customers": "جاري تصدير العملاء...",
+        "subs_customers_exported_success": "تم تصدير العملاء بنجاح ✅",
+        "subs_import_instruction": (
+            "أرسل ملف Excel (.xlsx) يحتوي على العملاء.\n\n"
+            "استخدم <b>تصدير العملاء</b> للحصول على نفس تنسيق الأعمدة.\n"
+            "الحقول المطلوبة: الجوال، يوزر الاشتراك، كلمة المرور، المدة، تاريخ البداية.\n"
+            "إذا وُجد المعرف مسبقاً يتم تحديث السجل."
+        ),
+        "subs_importing_customers": "جاري استيراد العملاء...",
+        "subs_import_result": (
+            "نتيجة الاستيراد:\n"
+            "إضافة: <b>{created}</b>\n"
+            "تحديث: <b>{updated}</b>\n"
+            "تخطي: <b>{skipped}</b>\n"
+            "أخطاء: <b>{error_count}</b>"
+        ),
+        "subs_import_errors_sample": "أمثلة على الأخطاء:\n{lines}",
+        "subs_import_invalid_file": "أرسل ملف Excel بصيغة .xlsx فقط ❌",
+        "subs_import_no_rows": "الملف فارغ ❌",
+        "subs_import_wrong_format": "تنسيق الأعمدة غير صحيح. صدّر العملاء أولاً وعدّل الملف ❌",
+        "subs_import_missing_phone": "الجوال مطلوب ❌",
+        "subs_import_missing_username": "يوزر الاشتراك مطلوب ❌",
+        "subs_import_missing_password": "كلمة المرور مطلوبة ❌",
+        "subs_import_nothing_done": "لم يتم استيراد أي سجل. راجع الأخطاء أدناه ❌",
     },
     models.Language.ENGLISH: {
         "user_welcome_msg": "Welcome to the subscription management bot.",
@@ -370,6 +405,18 @@ TEXTS = {
         "excel_unknown": "Unknown",
         "excel_yes": "Yes",
         "excel_no": "No",
+        "excel_customer_id": "ID",
+        "excel_customer_name": "Name",
+        "excel_phone": "Phone",
+        "excel_service_username": "Service username",
+        "excel_service_password": "Password",
+        "excel_subscription_type": "Subscription type",
+        "excel_duration_days": "Duration (days)",
+        "excel_start_date": "Start date",
+        "excel_end_date": "End date",
+        "excel_telegram_user_id": "Telegram user ID",
+        "excel_notes": "Notes",
+        "excel_customer_status": "Status",
         "lang_arabic": "Arabic",
         "lang_english": "English",
         "permission_manage_subscriptions": "Manage customer subscriptions",
@@ -382,11 +429,11 @@ TEXTS = {
         "subs_choose_duration": "Choose subscription duration in days",
         "subs_enter_custom_duration": "Send number of days",
         "subs_choose_start_date": "Choose subscription start date",
-        "subs_enter_start_date": "Send start date (YYYY-MM-DD)",
+        "subs_enter_start_date": "Send start date (DD/MM/YYYY or YYYY-MM-DD)",
         "subs_confirm_dates": (
             "Start: <b>{start}</b>\n" "End: <b>{end}</b>\n\n" "Confirm or edit end date"
         ),
-        "subs_enter_end_date": "Send end date (YYYY-MM-DD)",
+        "subs_enter_end_date": "Send end date (DD/MM/YYYY or YYYY-MM-DD)",
         "subs_enter_notes": "Send notes",
         "subs_enter_telegram_id": "Send customer Telegram ID for reminders",
         "subs_confirm_add": ("Confirm adding customer:\n\n" "{card}"),
@@ -444,8 +491,7 @@ TEXTS = {
         "subs_edit_reminder_days": "Send reminder days before expiry (comma-separated, e.g. 3,1)",
         "subs_settings_saved": "Settings saved ✅",
         "subs_invalid_phone": "Invalid phone number ❌",
-        "subs_duplicate_phone": "Phone number already registered ❌",
-        "subs_invalid_date": "Invalid date. Use YYYY-MM-DD ❌",
+        "subs_invalid_date": "Invalid date. Use DD/MM/YYYY or YYYY-MM-DD ❌",
         "subs_invalid_duration": "Invalid number of days ❌",
         "subs_invalid_telegram_id": "Invalid Telegram ID ❌",
         "subs_name_none": "—",
@@ -486,6 +532,30 @@ TEXTS = {
             "Current reminder message template:\n\n" "{text}"
         ),
         "subs_current_reminder_days": "Current reminder days: <b>{days}</b>",
+        "subs_exporting_customers": "Exporting customers...",
+        "subs_customers_exported_success": "Customers exported successfully ✅",
+        "subs_import_instruction": (
+            "Send an Excel file (.xlsx) with customer rows.\n\n"
+            "Use <b>Export customers</b> to get the correct column layout.\n"
+            "Required: phone, service username, password, duration, start date.\n"
+            "Rows with an existing customer ID will be updated."
+        ),
+        "subs_importing_customers": "Importing customers...",
+        "subs_import_result": (
+            "Import result:\n"
+            "Created: <b>{created}</b>\n"
+            "Updated: <b>{updated}</b>\n"
+            "Skipped: <b>{skipped}</b>\n"
+            "Errors: <b>{error_count}</b>"
+        ),
+        "subs_import_errors_sample": "Sample errors:\n{lines}",
+        "subs_import_invalid_file": "Send an Excel file (.xlsx) only ❌",
+        "subs_import_no_rows": "The file is empty ❌",
+        "subs_import_wrong_format": "Invalid column headers. Export customers first and edit that file ❌",
+        "subs_import_missing_phone": "Phone is required ❌",
+        "subs_import_missing_username": "Service username is required ❌",
+        "subs_import_missing_password": "Password is required ❌",
+        "subs_import_nothing_done": "No rows were imported. See errors below ❌",
     },
 }
 
@@ -545,6 +615,8 @@ BUTTONS = {
         "subs_stats": "إحصائيات 📊",
         "subs_offer_settings": "إعدادات العروض 🔔",
         "subs_run_reminders_now": "تشغيل التنبيهات الآن 🔔",
+        "subs_export_excel": "تصدير العملاء 📤",
+        "subs_import_excel": "استيراد العملاء 📥",
         "subs_search_by_phone": "حسب الجوال 📱",
         "subs_search_by_username": "حسب اليوزر 👤",
         "subs_edit": "تعديل ✏️",
@@ -627,6 +699,8 @@ BUTTONS = {
         "subs_stats": "Statistics 📊",
         "subs_offer_settings": "Offer settings 🔔",
         "subs_run_reminders_now": "Run reminders now 🔔",
+        "subs_export_excel": "Export customers 📤",
+        "subs_import_excel": "Import customers 📥",
         "subs_search_by_phone": "By phone 📱",
         "subs_search_by_username": "By username 👤",
         "subs_edit": "Edit ✏️",

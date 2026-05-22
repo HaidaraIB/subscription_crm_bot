@@ -1,5 +1,6 @@
 from telegram import InlineKeyboardButton
 from common.lang_dicts import BUTTONS
+from common.subscription_utils import format_date
 import models
 
 DURATION_PRESETS = [
@@ -46,6 +47,16 @@ def build_subscriptions_main_keyboard(lang: models.Language):
             InlineKeyboardButton(
                 BUTTONS[lang]["subs_run_reminders_now"],
                 callback_data="subs_run_reminders_now",
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                BUTTONS[lang]["subs_export_excel"],
+                callback_data="subs_export_excel",
+            ),
+            InlineKeyboardButton(
+                BUTTONS[lang]["subs_import_excel"],
+                callback_data="subs_import_excel",
             ),
         ],
     ]
@@ -123,7 +134,6 @@ def build_confirm_dates_keyboard(lang: models.Language):
         ],
     ]
     return keyboard
-
 
 
 def build_confirm_add_button(lang: models.Language):
@@ -238,7 +248,6 @@ def build_delete_confirm_button(lang: models.Language, customer_id: int):
 
 def build_list_keyboard(
     customers: list,
-    lang: models.Language,
     list_type: str,
     page: int,
     total: int,
@@ -246,18 +255,29 @@ def build_list_keyboard(
     keyboard = []
     for c in customers:
         status = "✅" if c.is_active() else "❌"
-        label = f"{status} #{c.id} {c.service_username} → {c.end_date}"
+        label = f"{status} #{c.id} {c.service_username} → {format_date(c.end_date)}"
         keyboard.append(
-            [InlineKeyboardButton(label[:60], callback_data=f"subs_view_{c.id}")]
+            [
+                InlineKeyboardButton(
+                    label[:60],
+                    callback_data=f"subs_view_{c.id}",
+                )
+            ]
         )
     nav = []
     if page > 0:
         nav.append(
-            InlineKeyboardButton("◀️", callback_data=f"subs_{list_type}_{page - 1}")
+            InlineKeyboardButton(
+                "◀️",
+                callback_data=f"subs_{list_type}_{page - 1}",
+            )
         )
     if (page + 1) * 10 < total:
         nav.append(
-            InlineKeyboardButton("▶️", callback_data=f"subs_{list_type}_{page + 1}")
+            InlineKeyboardButton(
+                "▶️",
+                callback_data=f"subs_{list_type}_{page + 1}",
+            )
         )
     if nav:
         keyboard.append(nav)

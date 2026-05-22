@@ -1,24 +1,34 @@
 from logging.config import fileConfig
+from pathlib import Path
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+from Config import Config
+from models.DB import Base
+
+# Register all ORM models on Base.metadata (side-effect imports).
+import models.Customer  # noqa: F401
+import models.User  # noqa: F401
+import models.ForceJoinChat  # noqa: F401
+import models.AdminPermission  # noqa: F401
+import models.BotSettings  # noqa: F401
+import models.SubscriptionReminder  # noqa: F401
+
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
+if config.config_file_name is not None and config.attributes.get(
+    "configure_logger", True
+):
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+if Config.DB_PATH:
+    db_path = Path(Config.DB_PATH).as_posix()
+    config.set_main_option("sqlalchemy.url", f"sqlite:///{db_path}")
+
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

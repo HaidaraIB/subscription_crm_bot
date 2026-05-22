@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 from Config import Config
 from common.lang_dicts import TEXTS, get_lang
-from common.subscription_utils import parse_reminder_days, strip_html_tags
+from common.subscription_utils import format_date, parse_reminder_days, strip_html_tags
 from models.BotSettings import (
     SETTING_RENEWAL_OFFER,
     SETTING_REMINDER_DAYS,
@@ -26,7 +26,7 @@ def _build_reminder_message(customer, days_left: int, session) -> str:
     return template.format(
         name=name,
         service_username=customer.service_username,
-        end_date=customer.end_date.isoformat(),
+        end_date=format_date(customer.end_date),
         days_left=days_left,
         renewal_offer=offer,
     )
@@ -49,8 +49,8 @@ def _build_owner_reminder_message(
         service_password=customer.service_password,
         subscription_type=customer.subscription_type,
         duration_days=customer.duration_days,
-        start_date=customer.start_date.isoformat(),
-        end_date=customer.end_date.isoformat(),
+        start_date=format_date(customer.start_date),
+        end_date=format_date(customer.end_date),
         days_left=days_left,
         telegram_user_id=telegram_id,
         notes=customer.notes or texts["subs_notes_none"],

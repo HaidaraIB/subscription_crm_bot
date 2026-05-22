@@ -2,7 +2,7 @@ from datetime import date, timedelta
 import sqlalchemy as sa
 import models
 from models.BotSettings import SETTING_REMINDER_DAYS
-from common.subscription_utils import parse_reminder_days, normalize_phone
+from common.subscription_utils import format_date, parse_reminder_days, normalize_phone
 from common.lang_dicts import TEXTS
 
 
@@ -33,8 +33,8 @@ def format_customer_card(customer: models.Customer, lang: models.Language) -> st
         service_password=customer.service_password,
         subscription_type=customer.subscription_type,
         duration_days=customer.duration_days,
-        start_date=customer.start_date.isoformat(),
-        end_date=customer.end_date.isoformat(),
+        start_date=format_date(customer.start_date),
+        end_date=format_date(customer.end_date),
         status=TEXTS[lang][status_key],
         telegram_user_id=customer.telegram_user_id or TEXTS[lang]["subs_telegram_none"],
         notes=customer.notes or TEXTS[lang]["subs_notes_none"],
